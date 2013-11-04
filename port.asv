@@ -258,7 +258,7 @@ else
         if ud.keyIsDown
             break;
         end
-        
+         t
     end
     
     obj.outWrite;

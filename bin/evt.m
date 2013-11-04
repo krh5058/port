@@ -1,6 +1,8 @@
 classdef evt < event.EventData
     properties
-        t % Timestamp (s)
+        run % Run value
+        schedt % Scheduled (s)
+        actt % Actual (s)
         order % Current order
         section % Current section
         pres % Current presentation

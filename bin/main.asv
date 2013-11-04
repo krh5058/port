@@ -3,7 +3,7 @@ classdef main < handle
     %   Detailed explanation goes here
     
     properties
-        debug = 0; % Debug on/off
+        debug = 1; % Debug on/off
         s = false; % Scramble flag
         monitor
         path
@@ -20,7 +20,7 @@ classdef main < handle
     methods (Static)
         function [monitor] = disp()
             % Find out screen number.
-            debug = 0;
+            debug = 1;
             if debug
                 %                 whichScreen = max(Screen('Screens'));
                 whichScreen = 2;
@@ -392,7 +392,7 @@ classdef main < handle
             fprintf('main.m (outWrite): Storing presentation data.\n');
             cell2csv([obj.path.out filesep obj.out.f_out '1.csv'],obj.out.out1)
         end
-        
+         t
     end
     
 end
