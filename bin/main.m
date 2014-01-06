@@ -3,7 +3,7 @@ classdef main < handle
     %   Detailed explanation goes here
     
     properties
-        debug = 0; % Debug on/off
+        debug = 1; % Debug on/off
         s = false; % Scramble flag
         monitor
         path
@@ -20,7 +20,7 @@ classdef main < handle
     methods (Static)
         function [monitor] = disp()
             % Find out screen number.
-            debug = 0;
+            debug = 1;
             if debug
                 %                 whichScreen = max(Screen('Screens'));
                 whichScreen = 2;
@@ -233,10 +233,21 @@ classdef main < handle
             obj.exp = exp;
             
             out.f_out = [exp.sid '_out'];
+            out.fid = fopen([obj.path.out filesep out.f_out '.csv'],'w');
+            out.sep = ',';
+            out.nl = '\n';
             out.head1 = {'SID','Run','Scheduled Onset(s)','Actual Onset(s)','Scheduled Onset(TR)','Actual Onset(TR)','Order','Section','Picture'};
-            out.out1 = cell([1 length(out.head1)]);
-            out.out1(1,:) = out.head1;
-             
+%             out.out1 = cell([1 length(out.head1)]);
+%             out.out1(1,:) = out.head1;
+            for i = 1:length(out.head1)
+                fprintf(out.fid,out.head1{i});
+                if i==length(out.head1)
+                    fprintf(out.fid,out.nl);
+                else
+                    fprintf(out.fid,out.sep);
+                end
+            end
+            
             fprintf('main.m (expset): Initializing output.\n');
             obj.out = out;
             
@@ -385,12 +396,29 @@ classdef main < handle
         function outFormat(obj,src,evt)
             schedTR = evt.schedt/obj.exp.TR;
             actTR = evt.actt/obj.exp.TR;
-            obj.out.out1(end+1,:) = {obj.exp.sid,evt.run,evt.schedt,evt.actt,schedTR,actTR,evt.order,evt.section,evt.pres};
+%             obj.out.out1(end+1,:) = {obj.exp.sid,evt.run,evt.schedt,evt.actt,schedTR,actTR,evt.order,evt.section,evt.pres};
+            temp = {obj.exp.sid,evt.run,evt.schedt,evt.actt,schedTR,actTR,evt.order,evt.section,evt.pres};
+            for i = 1:length(temp)
+                if ~ischar(temp{i})
+                    fprintf(obj.out.fid,num2str(temp{i}));
+                else
+                    fprintf(obj.out.fid,temp{i});
+                end
+                if i==length(temp)
+                    fprintf(obj.out.fid,obj.out.nl);
+                else
+                    fprintf(obj.out.fid,obj.out.sep);
+                end
+            end            
         end
         
-        function outWrite(obj)
-            fprintf('main.m (outWrite): Storing presentation data.\n');
-            cell2csv([obj.path.out filesep obj.out.f_out '1.csv'],obj.out.out1)
+%         function outWrite(obj)
+%             fprintf('main.m (outWrite): Storing presentation data.\n');
+%             cell2csv([obj.path.out filesep obj.out.f_out '1.csv'],obj.out.out1)
+%         end
+
+        function outClose(obj)
+            fclose(obj.out.fid);
         end
         
     end

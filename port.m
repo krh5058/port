@@ -261,9 +261,10 @@ else
         
     end
     
-    obj.outWrite;
+%     obj.outWrite;
     
     % Clean up
+    obj.outClose;
     RestrictKeysForKbCheck([]);
     tobj.delete;
     
